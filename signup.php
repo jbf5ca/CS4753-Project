@@ -101,6 +101,33 @@ if(strlen($msg) == 0)
 		// worked
 		//echo("user added");
 		$msg .= "You have successfully singed up. Welcome to Furnish Us!";
+		
+		// MAILING STUFF //
+		date_default_timezone_set('Etc/EST');
+		require 'PHPMailerAutoload.php';
+		$mail = new PHPMailer;
+		$mail->isSMTP();
+		$mail->SMTPDebug = 0;
+		$mail->Debugoutput = 'html';
+		$mail->Host = 'smtp.gmail.com';
+		$mail->Port = 587;
+		$mail->SMTPSecure = 'tls';
+		$mail->SMTPAuth = true;
+		$mail->Username = "furnishusmailing@gmail.com";
+		$mail->Password = "furnishus1";
+		$mail->setFrom('furnishusmailing@gmail');
+		$mail->addAddress($email, $name);
+		$mail->Subject = "Welcome to Furnish Us!";
+		$mail->Body = 'Hello ' . $name . ', 
+		Thank you or joining us at Furnish Us. We hope that you have a pleasant experience as you solve all of your used furniture buying and selling needs. 
+
+		The Furnish Us Team';
+		if(!$mail->send()) {
+			echo 'Message could not be sent.';
+			echo 'Mailer Error: ' . $mail->ErrorInfo;
+		} else {
+			echo 'Message has been sent';
+		}
 	}
 	else
 	{
@@ -111,12 +138,12 @@ if(strlen($msg) == 0)
 }
 $conn->close();
 
-// MAILING STUFF //
+/* // MAILING STUFF //
 date_default_timezone_set('Etc/EST');
 require 'PHPMailerAutoload.php';
 $mail = new PHPMailer;
 $mail->isSMTP();
-$mail->SMTPDebug = 2;
+$mail->SMTPDebug = 0;
 $mail->Debugoutput = 'html';
 $mail->Host = 'smtp.gmail.com';
 $mail->Port = 587;
@@ -127,13 +154,16 @@ $mail->Password = "furnishus1";
 $mail->setFrom('furnishusmailing@gmail');
 $mail->addAddress($email, $name);
 $mail->Subject = "Welcome to Furnish Us!";
-$mail->Body = 'Hello ' . $name . ', <br><br>Thank you or joining us at Furnish Us. We hope that you have a pleasant experience as you solve all of your used furniture buying and selling needs. <br><br>The Furnish Us Team';
+$mail->Body = 'Hello ' . $name . ', 
+Thank you or joining us at Furnish Us. We hope that you have a pleasant experience as you solve all of your used furniture buying and selling needs. 
+
+The Furnish Us Team';
 if(!$mail->send()) {
     echo 'Message could not be sent.';
     echo 'Mailer Error: ' . $mail->ErrorInfo;
 } else {
     echo 'Message has been sent';
-}
+} */
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
@@ -162,7 +192,7 @@ if(!$mail->send()) {
           <li><a></a></li>
           <li><a href="about.php">About Us</a></li>
           <li><a></a></li>
-          <li class="current"><a href="singup.php">Sign Up</a></li>
+          <li class="current"><a href="signup.php">Sign Up</a></li>
         </ul>
       </div><!--end menubar-->
     </div><!--end header-->
@@ -173,7 +203,7 @@ if(!$mail->send()) {
 	  <p>Please enter the following information to register with Furnish Us. Make sure that your password is at least 8 characters for security purposes.</p>
 	  <p>Personal Information: </p>
       <div class="container">
-		<form action="singup.php" method="post">
+		<form action="signup.php" method="post">
           Name: <input type="text" name="name"><br />
           Email: <input type="text" name="email"><br />
           Address: <input type="text" name="address"><br />
@@ -183,7 +213,7 @@ if(!$mail->send()) {
           Password: <input type="password" name="password"><br />
           Re-enter password: <input type="password" name="password2"><br />
 		  <br><p>Banking Information: </p>
-		  Credit Card Number (no dashes/spaces): <input type="text" name="cardnum" pattern="^(?:4[0-9]{12}(?:[0-9]{3})? | (?:5[1-5][0-9]{2} | 222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12} | 3[47][0-9]{13} | 3(?:0[0-5]|[68][0-9])[0-9]{11} | 6(?:011|5[0-9]{2})[0-9]{12} | (?:2131|1800|35\d{3})\d{11})$" title="Your credit card number with digits only, no slashes or spaces."> <br />
+		  Credit Card Number (no dashes/spaces): <input type="text" name="cardnum" pattern="^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$" title="Your credit card number with digits only, no slashes or spaces."> <br />
 		  Expiration Date (MM/YY): <input type="text" name="expdate" pattern="[0-9][0-9][/][0-9][0-9]" title="The expiration date in MM/YY format e.g. 03/18 for March 2018"><br>
 		  CVV: <input type="text" name="cvv" pattern="^[0-9]{3,4}$" title="3 or 4 digit CVV, usually found on the back of your card"><br>
 		  </div>
