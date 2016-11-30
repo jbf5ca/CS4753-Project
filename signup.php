@@ -22,7 +22,7 @@ $email = "";
 $pw = "";
 $pw2 = "";
 $msg = "";
-
+$cardnum = $expdate = $cvv = "";
 if(isset($_POST['name']))
 {
 	// validate all input
@@ -34,7 +34,10 @@ if(isset($_POST['name']))
 	$zip = mysql_real_escape_string($_POST['zipcode']);
 	$pw = mysql_real_escape_string($_POST['password']);
 	$pw2 = mysql_real_escape_string($_POST['password2']);
-
+	$cardnum = mysql_real_escape_string($_POST['cardnum']);
+	$expdate = mysql_real_escape_string($_POST['expdate']);
+	$cvv = mysql_real_escape_string($_POST['cvv']);
+	
 	if( !$name || !$email || !$address || !$city || !$state || !$zip || !$pw || !$pw2)
 	{
 		$msg .= "Please enter values for all fields. ";
@@ -90,7 +93,7 @@ if(strlen($msg) == 0)
 	
 	// send mysql query
 	//$sql = "INSERT INTO " . $tbl . "(name, email, address, city, state, zipcode, password) VALUES " ."(" . $name .", ". $email .", ". $address .", ". $city .", ". $state .", ". $zip .", ". $pw . ")";
-	$sql = "INSERT INTO `siteUsers`(`Name`, `Email`, `Address`, `City`, `State`, `Zipcode`, `Password`) VALUES " ."('" . $name ."', '". $email ."', '". $address ."', '". $city ."', '". $state ."', '". $zip ."', '". $pw . "')";
+	$sql = "INSERT INTO `siteUsers`(`Name`, `Email`, `Address`, `City`, `State`, `Zipcode`, `Password`, `Cardnum`, `Expdate`, `CVV`) VALUES " ."('" . $name ."', '". $email ."', '". $address ."', '". $city ."', '". $state ."', '". $zip ."', '". $pw . "', '" . $cardnum . "', '" . $expdate . "', '" . $cvv . "')";
 
 	//echo($sql);
 
@@ -103,7 +106,7 @@ if(strlen($msg) == 0)
 		$msg .= "You have successfully singed up. Welcome to Furnish Us!";
 		
 		// MAILING STUFF //
-		date_default_timezone_set('Etc/EST');
+		//date_default_timezone_set('Etc/EST');
 		require 'PHPMailerAutoload.php';
 		$mail = new PHPMailer;
 		$mail->isSMTP();
@@ -123,17 +126,17 @@ if(strlen($msg) == 0)
 
 		The Furnish Us Team';
 		if(!$mail->send()) {
-			echo 'Message could not be sent.';
-			echo 'Mailer Error: ' . $mail->ErrorInfo;
+			//echo 'Message could not be sent.';
+			//echo 'Mailer Error: ' . $mail->ErrorInfo;
 		} else {
-			echo 'Message has been sent';
+			//echo 'Message has been sent';
 		}
 	}
 	else
 	{
 		// did not work 
 		//echo("failed");
-		$msg = "Sorry, your sing up attempt failed. \n" . $msg;
+		$msg = "Sorry, your sign up attempt failed. \n" . $msg;
 	}
 }
 $conn->close();
@@ -204,14 +207,14 @@ if(!$mail->send()) {
 	  <p>Personal Information: </p>
       <div class="container">
 		<form action="signup.php" method="post">
-          Name: <input type="text" name="name"><br />
-          Email: <input type="text" name="email"><br />
-          Address: <input type="text" name="address"><br />
-          City: <input type="text" name="city"><br />
-          State: <input type="text" name="state"><br />
-          Zip code: <input type="text" name="zipcode"><br />
-          Password: <input type="password" name="password"><br />
-          Re-enter password: <input type="password" name="password2"><br />
+          Name: <input type="text" name="name" pattern="^[a-zA-Z][a-zA-Z ]+$" required><br />
+          Email: <input type="text" name="email" pattern="[^@]+@[^@]+\.[a-zA-Z]{2,6}" required title="A valid email address"><br />
+          Address: <input type="text" name="address" required><br />
+          City: <input type="text" name="city" required><br />
+          State: <input type="text" name="state" required><br />
+          Zip code: <input type="text" name="zipcode" pattern="^[0-9]{5}$" title="A 5-digit zip code" required><br />
+          Password: <input type="password" name="password" required><br />
+          Re-enter password: <input type="password" name="password2" required><br />
 		  <br><p>Banking Information: </p>
 		  Credit Card Number (no dashes/spaces): <input type="text" name="cardnum" pattern="^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$" title="Your credit card number with digits only, no slashes or spaces."> <br />
 		  Expiration Date (MM/YY): <input type="text" name="expdate" pattern="[0-9][0-9][/][0-9][0-9]" title="The expiration date in MM/YY format e.g. 03/18 for March 2018"><br>
@@ -221,6 +224,14 @@ if(!$mail->send()) {
 		<input type="submit" value="Sign Up" name="button"><br>
 		</form>
 		
+		<p>Subscribe to Furnish Us Elite for $4.99/mo for access to discounts and advanced features<p>
+		<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="MW9WZYXH4QKJG">
+<input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_subscribe_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
 	  
 		<?php
 		if(isset($_POST['button']))
